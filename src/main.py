@@ -1,11 +1,28 @@
 import pygame
 
 pygame.init()
-WIDTH = 1280
-HEIGHT = 720
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
+
+# Suika container ratio is 4:5
+WIDTH = 400
+HEIGHT = 500
+CTR_X = SCREEN_WIDTH / 2
+CTR_Y = SCREEN_HEIGHT / 2
+
+# Coordinate positions of each corner of the Suika container
+LEFT = CTR_X - (WIDTH / 2)
+RIGHT = LEFT + WIDTH
+TOP = CTR_Y - (HEIGHT / 2)
+BOTTOM = TOP + HEIGHT
+
+# Thickness of the container
+BORDER_WIDTH = 10
 
 fruits = []
 class Fruit:
@@ -19,10 +36,10 @@ class Fruit:
 
     def in_bounds(self) -> bool:
         return (
-            self.x - self.radius > 0 
-            and self.x + self.radius < WIDTH
-            and self.y - self.radius > 0 
-            and self.y + self.radius < HEIGHT
+            self.x - self.radius > LEFT 
+            and self.x + self.radius < RIGHT
+            # and self.y - self.radius > TOP 
+            and self.y + self.radius < BOTTOM
         )
 
     def update(self) -> None:
@@ -42,8 +59,18 @@ while running:
 
     screen.fill("black")
 
+    # Basic cursor to show where the fruit will drop
     mouse_x, mouse_y = pygame.mouse.get_pos()
     pygame.draw.circle(screen, "white", (mouse_x, 75), 25)
+
+    # Render Suika container
+    pygame.draw.rect(screen, "white", pygame.rect.Rect(
+        LEFT - BORDER_WIDTH, 
+        TOP - BORDER_WIDTH, 
+        WIDTH + BORDER_WIDTH * 2, 
+        HEIGHT + BORDER_WIDTH * 2
+    ))
+    pygame.draw.rect(screen, "black", pygame.rect.Rect(LEFT, TOP, WIDTH, HEIGHT))
 
     for fruit in fruits:
         fruit.draw(screen)
