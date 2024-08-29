@@ -5,8 +5,8 @@ A basic Suika game clone made using Python and Pygame.
 ## Roadmap
 
     1. Allow the user to drop fruits
-     a. The fruit follows the cursor at a fixed-y position.
-     b. When the left-mouse button is pressed the fruit falls down.
+     a. The fruit follows the cursor at a fixed-y position. [DONE]
+     b. When the left-mouse button is pressed the fruit falls down. [DONE]
     
     2. Constrain the play area
      a. Create a "box" that restricts where fruit can be dropped and be moved to.
