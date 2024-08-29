@@ -1,5 +1,4 @@
 import pygame
-import numpy
 
 pygame.init()
 WIDTH = 1280
