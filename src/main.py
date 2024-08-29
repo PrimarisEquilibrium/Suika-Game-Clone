@@ -1,4 +1,5 @@
 import pygame
+import numpy
 
 pygame.init()
 
@@ -24,22 +25,23 @@ BOTTOM = TOP + HEIGHT
 # Thickness of the container
 BORDER_WIDTH = 10
 
+TEMP_FRUIT_RADIUS = 25
 fruits = []
 class Fruit:
     def __init__(self, init_x: int, init_y: int) -> None:
         self.x = init_x
         self.y = init_y
-        self.radius = 25
+        self.radius = TEMP_FRUIT_RADIUS
     
     def draw(self, screen: pygame.Surface) -> None:
         pygame.draw.circle(screen, "white", (self.x, self.y), self.radius)
 
     def in_bounds(self) -> bool:
         return (
-            self.x - self.radius > LEFT 
-            and self.x + self.radius < RIGHT
+            self.x - self.radius >= LEFT 
+            and self.x + self.radius <= RIGHT
             # and self.y - self.radius > TOP 
-            and self.y + self.radius < BOTTOM
+            and self.y + self.radius <= BOTTOM
         )
 
     def update(self) -> None:
@@ -49,8 +51,9 @@ class Fruit:
 while running:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # Fruit initially dropped at mouse-x and constrained y-position 
-            dropped_fruit = Fruit(pygame.mouse.get_pos()[0], 75)
+            # Fruit initially dropped at mouse-x (clamped to Suika container dimensions) and constrained y-position
+            fruit_x = numpy.clip(pygame.mouse.get_pos()[0], LEFT + TEMP_FRUIT_RADIUS, RIGHT - TEMP_FRUIT_RADIUS)
+            dropped_fruit = Fruit(fruit_x, 75)
             if dropped_fruit.in_bounds():
                 fruits.append(dropped_fruit)
 
@@ -60,7 +63,7 @@ while running:
     screen.fill("black")
 
     # Basic cursor to show where the fruit will drop
-    mouse_x, mouse_y = pygame.mouse.get_pos()
+    mouse_x = numpy.clip(pygame.mouse.get_pos()[0], LEFT + TEMP_FRUIT_RADIUS, RIGHT - TEMP_FRUIT_RADIUS)
     pygame.draw.circle(screen, "white", (mouse_x, 75), 25)
 
     # Render Suika container
