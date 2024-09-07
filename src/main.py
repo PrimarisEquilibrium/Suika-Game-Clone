@@ -34,11 +34,6 @@ steps_per_frame = 1
 space = pymunk.Space()
 space.gravity = (0.0, 900.0)
 
-options = pymunk.pygame_util.DrawOptions(screen)
-
-# DrawOptions Dev Flags
-options.flags |= pymunk.SpaceDebugDrawOptions.DRAW_COLLISION_POINTS
-
 
 def create_static_boundaries() -> None:
     """Initializes the game boundary with static line segments"""
@@ -111,6 +106,8 @@ def spawn_new_fruit_post_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, dat
     new_x, new_y = contact_point[0], contact_point[1]
     create_circle(50, 25, (new_x, new_y))
 
+    return True
+
 
 # Collision configuration
 handler = space.add_collision_handler(1, 1)
@@ -124,20 +121,27 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, _ = pygame.mouse.get_pos()
-            mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT + 10)
+            mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
             create_circle(50, 25, (mouse_x, 50))
 
     screen.fill("black")
 
     mouse_x, _ = pygame.mouse.get_pos()
-    mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT + 10)
+    mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
     
     pygame.draw.circle(screen, "white", (mouse_x, 50), 25)
     
     for _ in range(1):
         space.step(DT)
 
-    space.debug_draw(options)
+    # Render shapes in the PyMunk space
+    for shape in space.shapes:
+        if isinstance(shape, pymunk.Circle):
+            pygame.draw.circle(screen, "blue", shape.body.position, 25)
+        if isinstance(shape, pymunk.Segment):
+            pygame.draw.line(screen, "white", shape.a, shape.b, 10)
+
+    # space.debug_draw(options)
     pygame.display.flip()
 
     clock.tick(FPS)
