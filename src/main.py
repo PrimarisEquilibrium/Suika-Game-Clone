@@ -53,8 +53,6 @@ def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
     space.add(body, shape)
 
 
-create_circle(10, 25, (CTR_X, 50))
-
 # Game container boundaries
 static_body = space.static_body
 padding = 200
@@ -72,6 +70,10 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, _ = pygame.mouse.get_pos()
+            mouse_x = numpy.clip(mouse_x, CTR_X - padding, CTR_X + padding)
+            create_circle(10, 25, (mouse_x, 50))
 
     screen.fill("black")
 
