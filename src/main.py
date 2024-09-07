@@ -91,9 +91,26 @@ def delete_shapes_pre_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: 
     return True  # Collision should be processed
 
 
+def spawn_new_fruit_post_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
+    """Spawns a new shape at the contact point between two collided shapes
+    
+    Args:
+        arbiter: Information about the two collided shapes.
+        space: The space the collision occured in.
+        data: Additional information required for handling the collision.
+    
+    Returns:
+        True, as the collision has been processed.
+    """
+    contact_point = arbiter.contact_point_set.points[0].point_a
+    new_x, new_y = contact_point[0], contact_point[1]
+    create_circle(50, 25, (new_x, new_y))
+
+
 # Collision configuration
 handler = space.add_collision_handler(1, 1)
 handler.pre_solve = delete_shapes_pre_solve
+handler.post_solve = spawn_new_fruit_post_solve
 
 create_static_boundaries()
 while running:
