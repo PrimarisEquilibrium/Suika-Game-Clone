@@ -9,14 +9,14 @@ A basic Suika game clone made using Python and Pygame.
      b. When the left-mouse button is pressed the fruit falls down. [DONE]
     
     2. Constrain the play area
-     a. Create a "box" that restricts where fruit can be dropped and be moved to.
-     b. The rectangle borders are collideable and have infinite mass, no fruit should be able to pass through it.
-     c. Large fruit are able to roll off the edge of the container.
+     a. Create a "box" that restricts where fruit can be dropped and be moved to. [DONE]
+     b. The rectangle borders are collideable and have infinite mass, no fruit should be able to pass through it. [DONE]
+     c. Large fruit are able to roll off the edge of the container. [DONE]
     
     3. Physics
      a. Fruits not yet dropped have no physics and simply follow the x-position of the cursor.
      b. Upon a mouse press the fruit's physics is enabled, it initally should have no external velocity other than gravity.
-     c. Fruits are able to collide with each other, the larger the fruit the larger the mass.
+     c. Fruits are able to collide with each other, the larger the fruit the larger the mass. [DONE]
 
     4. Fruit Merges
     
