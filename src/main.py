@@ -23,9 +23,9 @@ radius = 25
 inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
 body = pymunk.Body(mass, inertia)
 body.position = (100, 100)
-shape = pymunk.Circle(body, 10)
+shape = pymunk.Circle(body, radius, (0, 0))
 shape.elasticity = 0.8
-shape.friction = 0.9
+shape.friction = 0.4
 space.add(body, shape)
 
 while running:
