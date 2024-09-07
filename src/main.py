@@ -1,5 +1,7 @@
 import pygame
 import numpy
+import pymunk
+import pymunk.pygame_util
 
 pygame.init()
 
@@ -48,6 +50,23 @@ class Fruit:
         if self.in_bounds():
             self.y += 5
 
+FPS = 60.0
+DT = 1.0 / FPS
+space = pymunk.Space()
+space.gravity = (0.0, 900.0)
+options = pymunk.pygame_util.DrawOptions(screen)
+steps_per_frame = 1
+
+mass = 10
+radius = 25
+inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
+body = pymunk.Body(mass, inertia)
+body.position = (100, 100)
+shape = pymunk.Circle(body, 10)
+shape.elasticity = 0.8
+shape.friction = 0.9
+space.add(body, shape)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -62,25 +81,29 @@ while running:
 
     screen.fill("black")
 
-    # Basic cursor to show where the fruit will drop
-    mouse_x = numpy.clip(pygame.mouse.get_pos()[0], LEFT + TEMP_FRUIT_RADIUS, RIGHT - TEMP_FRUIT_RADIUS)
-    pygame.draw.circle(screen, "white", (mouse_x, 75), 25)
+    # # Basic cursor to show where the fruit will drop
+    # mouse_x = numpy.clip(pygame.mouse.get_pos()[0], LEFT + TEMP_FRUIT_RADIUS, RIGHT - TEMP_FRUIT_RADIUS)
+    # pygame.draw.circle(screen, "white", (mouse_x, 75), 25)
 
-    # Render Suika container
-    pygame.draw.rect(screen, "white", pygame.rect.Rect(
-        LEFT - BORDER_WIDTH, 
-        TOP - BORDER_WIDTH, 
-        WIDTH + BORDER_WIDTH * 2, 
-        HEIGHT + BORDER_WIDTH * 2
-    ))
-    pygame.draw.rect(screen, "black", pygame.rect.Rect(LEFT, TOP, WIDTH, HEIGHT))
+    # # Render Suika container
+    # pygame.draw.rect(screen, "white", pygame.rect.Rect(
+    #     LEFT - BORDER_WIDTH, 
+    #     TOP - BORDER_WIDTH, 
+    #     WIDTH + BORDER_WIDTH * 2, 
+    #     HEIGHT + BORDER_WIDTH * 2
+    # ))
+    # pygame.draw.rect(screen, "black", pygame.rect.Rect(LEFT, TOP, WIDTH, HEIGHT))
 
-    for fruit in fruits:
-        fruit.draw(screen)
-        fruit.update()
+    # for fruit in fruits:
+    #     fruit.draw(screen)
+    #     fruit.update()
+    
+    for _ in range(1):
+        space.step(DT)
 
+    space.debug_draw(options)
     pygame.display.flip()
 
-    clock.tick(60)
+    clock.tick(FPS)
 
 pygame.quit()
