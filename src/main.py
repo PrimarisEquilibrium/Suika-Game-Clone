@@ -2,6 +2,7 @@ import pygame
 import pymunk
 import pymunk.pygame_util
 
+
 pygame.init()
 
 SCREEN_WIDTH = 1280
@@ -30,16 +31,28 @@ options = pymunk.pygame_util.DrawOptions(screen)
 # DrawOptions Dev Flags
 options.flags |= pymunk.SpaceDebugDrawOptions.DRAW_COLLISION_POINTS
 
-# Demo Circle
-mass = 10
-radius = 25
-inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
-body = pymunk.Body(mass, inertia)
-body.position = (CTR_X, 50)
-shape = pymunk.Circle(body, radius, (0, 0))
-shape.elasticity = 0
-shape.friction = 0.4
-space.add(body, shape)
+
+def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
+    """Adds a circle with the given properties to the PyMunk physics space.
+    
+    Args:
+        mass: The mass of the circle.
+        radius: The radius of the circle.
+        position: The initial position of the circle.
+    """
+
+    inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
+    body = pymunk.Body(mass, inertia)
+    body.position = position
+
+    shape = pymunk.Circle(body, radius)
+    shape.elasticity = 0
+    shape.friction = 0.4
+
+    space.add(body, shape)
+
+
+create_circle(10, 25, (CTR_X, 50))
 
 # Game container boundaries
 static_body = space.static_body
