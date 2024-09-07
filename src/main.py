@@ -7,12 +7,17 @@ pygame.init()
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+# Relative coordinate landmarks
+CTR_X = SCREEN_WIDTH / 2
+CTR_Y = SCREEN_HEIGHT / 2
+
+# Pygame Config
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
 # Frame / Game Loop Properties
-FPS = 60.0
+FPS = 240.0
 DT = 1.0 / FPS
 steps_per_frame = 1
 
@@ -30,11 +35,24 @@ mass = 10
 radius = 25
 inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
 body = pymunk.Body(mass, inertia)
-body.position = (100, 100)
+body.position = (CTR_X, 50)
 shape = pymunk.Circle(body, radius, (0, 0))
-shape.elasticity = 0.8
+shape.elasticity = 0
 shape.friction = 0.4
 space.add(body, shape)
+
+# Game container boundaries
+static_body = space.static_body
+padding = 200
+static_lines = [
+    pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X - padding, CTR_Y - padding), 6.0),
+    pymunk.Segment(static_body, (CTR_X + padding, CTR_Y + padding), (CTR_X + padding, CTR_Y - padding), 6.0),
+    pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X + padding, CTR_Y + padding), 6.0),
+]
+for line in static_lines:
+    line.elasticity = 0.95
+    line.friction = 0.9
+space.add(*static_lines)
 
 while running:
     for event in pygame.event.get():
