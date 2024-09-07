@@ -51,7 +51,7 @@ def create_static_boundaries() -> None:
 
 
 def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
-    """Adds a circle with the given properties to the PyMunk physics space.
+    """Adds a circle with the given properties to the Pymunk physics space.
     
     Args:
         mass: The mass of the circle.
@@ -72,7 +72,7 @@ def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
     
 
 def delete_shapes_pre_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
-    """Deletes two shapes if they collide using PyMunk collision handling.
+    """Deletes two shapes if they collide using Pymunk collision handling.
     
     Args:
         arbiter: Information about the two collided shapes.
@@ -134,7 +134,7 @@ while running:
     for _ in range(1):
         space.step(DT)
 
-    # Render shapes in the PyMunk space
+    # Render shapes in the Pymunk space
     for shape in space.shapes:
         if isinstance(shape, pymunk.Circle):
             pygame.draw.circle(screen, "blue", shape.body.position, 25)

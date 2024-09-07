@@ -1,6 +1,6 @@
 # Suika Clone
 
-A basic Suika game clone made using Python and Pygame.
+A basic Suika game clone made using Python, Pygame, and Pymunk.
 
 ## Roadmap
 
