@@ -1,4 +1,5 @@
 import pygame
+import numpy
 import pymunk
 import pymunk.pygame_util
 
@@ -73,6 +74,11 @@ while running:
             running = False
 
     screen.fill("black")
+
+    mouse_x, _ = pygame.mouse.get_pos()
+    mouse_x = numpy.clip(mouse_x, CTR_X - padding, CTR_X + padding)
+    
+    pygame.draw.circle(screen, "white", (mouse_x, 50), 25)
     
     for _ in range(1):
         space.step(DT)
