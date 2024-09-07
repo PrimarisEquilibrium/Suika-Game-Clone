@@ -11,13 +11,21 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
+# Frame / Game Loop Properties
 FPS = 60.0
 DT = 1.0 / FPS
-space = pymunk.Space()
-space.gravity = (0.0, 900.0)
-options = pymunk.pygame_util.DrawOptions(screen)
 steps_per_frame = 1
 
+# Space Config
+space = pymunk.Space()
+space.gravity = (0.0, 900.0)
+
+options = pymunk.pygame_util.DrawOptions(screen)
+
+# DrawOptions Dev Flags
+options.flags |= pymunk.SpaceDebugDrawOptions.DRAW_COLLISION_POINTS
+
+# Demo Circle
 mass = 10
 radius = 25
 inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
