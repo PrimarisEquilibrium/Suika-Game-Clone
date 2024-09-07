@@ -13,6 +13,12 @@ SCREEN_HEIGHT = 720
 # Relative coordinate landmarks
 CTR_X = SCREEN_WIDTH / 2
 CTR_Y = SCREEN_HEIGHT / 2
+padding = 200  # Distance boundary sides are from the center of the screen
+# Coordinates of the game boundary
+LEFT = CTR_X - padding
+TOP = CTR_Y + padding
+BOTTOM = CTR_Y - padding
+RIGHT = CTR_X + padding
 
 # Pygame Config
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -34,15 +40,14 @@ options = pymunk.pygame_util.DrawOptions(screen)
 options.flags |= pymunk.SpaceDebugDrawOptions.DRAW_COLLISION_POINTS
 
 
-padding = 200
 def create_static_boundaries() -> None:
     """Initializes the game boundary with static line segments"""
 
     static_body = space.static_body
     static_lines = [
-        pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X - padding, CTR_Y - padding), 6.0),
-        pymunk.Segment(static_body, (CTR_X + padding, CTR_Y + padding), (CTR_X + padding, CTR_Y - padding), 6.0),
-        pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X + padding, CTR_Y + padding), 6.0),
+        pymunk.Segment(static_body, (LEFT, TOP), (LEFT, BOTTOM), 6.0),
+        pymunk.Segment(static_body, (RIGHT, TOP), (RIGHT, BOTTOM), 6.0),
+        pymunk.Segment(static_body, (LEFT, TOP), (RIGHT, TOP), 6.0),
     ]
     for line in static_lines:
         line.elasticity = 0.95
@@ -119,13 +124,13 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, _ = pygame.mouse.get_pos()
-            mouse_x = numpy.clip(mouse_x, CTR_X - padding + 10, CTR_X + padding - 10)
+            mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT + 10)
             create_circle(50, 25, (mouse_x, 50))
 
     screen.fill("black")
 
     mouse_x, _ = pygame.mouse.get_pos()
-    mouse_x = numpy.clip(mouse_x, CTR_X - padding + 10, CTR_X + padding - 10)
+    mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT + 10)
     
     pygame.draw.circle(screen, "white", (mouse_x, 50), 25)
     
