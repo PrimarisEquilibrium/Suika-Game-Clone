@@ -2,6 +2,7 @@ import pygame
 import numpy
 import pymunk
 import pymunk.pygame_util
+from typing import Any
 
 
 pygame.init()
@@ -64,10 +65,35 @@ def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
 
     shape = pymunk.Circle(body, radius)
     shape.elasticity = 0
-    shape.friction = 0.4
+    shape.friction = 0.8
+    shape.collision_type = 1
 
     space.add(body, shape)
+    
 
+def delete_shapes_pre_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
+    """Deletes two shapes if they collide using PyMunk collision handling.
+    
+    Args:
+        arbiter: Information about the two collided shapes.
+        space: The space the collision occured in.
+        data: Additional information required for handling the collision.
+    
+    Returns:
+        True, as the collision has been processed.
+    """
+    shape1, shape2 = arbiter.shapes
+
+    # Delete both the shape and the body
+    space.remove(shape1, shape1.body)
+    space.remove(shape2, shape2.body)
+
+    return True  # Collision should be processed
+
+
+# Collision configuration
+handler = space.add_collision_handler(1, 1)
+handler.pre_solve = delete_shapes_pre_solve
 
 create_static_boundaries()
 while running:
@@ -77,7 +103,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, _ = pygame.mouse.get_pos()
             mouse_x = numpy.clip(mouse_x, CTR_X - padding + 10, CTR_X + padding - 10)
-            create_circle(10, 25, (mouse_x, 50))
+            create_circle(50, 25, (mouse_x, 50))
 
     screen.fill("black")
 
