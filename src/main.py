@@ -33,6 +33,22 @@ options = pymunk.pygame_util.DrawOptions(screen)
 options.flags |= pymunk.SpaceDebugDrawOptions.DRAW_COLLISION_POINTS
 
 
+padding = 200
+def create_static_boundaries() -> None:
+    """Initializes the game boundary with static line segments"""
+
+    static_body = space.static_body
+    static_lines = [
+        pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X - padding, CTR_Y - padding), 6.0),
+        pymunk.Segment(static_body, (CTR_X + padding, CTR_Y + padding), (CTR_X + padding, CTR_Y - padding), 6.0),
+        pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X + padding, CTR_Y + padding), 6.0),
+    ]
+    for line in static_lines:
+        line.elasticity = 0.95
+        line.friction = 0.9
+    space.add(*static_lines)
+
+
 def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
     """Adds a circle with the given properties to the PyMunk physics space.
     
@@ -53,32 +69,20 @@ def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
     space.add(body, shape)
 
 
-# Game container boundaries
-static_body = space.static_body
-padding = 200
-static_lines = [
-    pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X - padding, CTR_Y - padding), 6.0),
-    pymunk.Segment(static_body, (CTR_X + padding, CTR_Y + padding), (CTR_X + padding, CTR_Y - padding), 6.0),
-    pymunk.Segment(static_body, (CTR_X - padding, CTR_Y + padding), (CTR_X + padding, CTR_Y + padding), 6.0),
-]
-for line in static_lines:
-    line.elasticity = 0.95
-    line.friction = 0.9
-space.add(*static_lines)
-
+create_static_boundaries()
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, _ = pygame.mouse.get_pos()
-            mouse_x = numpy.clip(mouse_x, CTR_X - padding, CTR_X + padding)
+            mouse_x = numpy.clip(mouse_x, CTR_X - padding + 10, CTR_X + padding - 10)
             create_circle(10, 25, (mouse_x, 50))
 
     screen.fill("black")
 
     mouse_x, _ = pygame.mouse.get_pos()
-    mouse_x = numpy.clip(mouse_x, CTR_X - padding, CTR_X + padding)
+    mouse_x = numpy.clip(mouse_x, CTR_X - padding + 10, CTR_X + padding - 10)
     
     pygame.draw.circle(screen, "white", (mouse_x, 50), 25)
     
