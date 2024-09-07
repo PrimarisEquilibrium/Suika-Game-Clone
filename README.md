@@ -14,8 +14,9 @@ A basic Suika game clone made using Python and Pygame.
      c. Large fruit are able to roll off the edge of the container. [DONE]
     
     3. Physics
-     a. Fruits not yet dropped have no physics and simply follow the x-position of the cursor.
-     b. Upon a mouse press the fruit's physics is enabled, it initally should have no external velocity other than gravity.
+     a. Fruits not yet dropped have no physics and simply follow the x-position of the cursor. [DONE]
+        - Have the cursor replicate the image of the fruit.
+     b. Upon a mouse press the fruit's physics is enabled, it initally should have no external velocity other than gravity. [DONE]
      c. Fruits are able to collide with each other, the larger the fruit the larger the mass. [DONE]
 
     4. Fruit Merges
