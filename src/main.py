@@ -37,7 +37,6 @@ space = pymunk.Space()
 space.gravity = (0.0, 900.0)
 
 
-# Fruit(id, radius, mass, color)
 class Fruit(Enum):
     """Represents a Suika fruit with its properties.
     
@@ -48,17 +47,17 @@ class Fruit(Enum):
         color: RGB color of the fruit.
     """
 
-    CHERRY     = (0,  10, 1.0, (255, 0, 0)),
-    STRAWBERRY = (1,  12, 1.2, (255, 105, 180)),
-    GRAPE      = (2,  14, 1.4, (128, 0, 128)),
-    DEKOPON    = (3,  18, 2.0, (255, 165, 0)),
-    ORANGE     = (4,  20, 2.5, (255, 165, 0)),
-    APPLE      = (5,  25, 3.0, (255, 0, 0)),
-    PEAR       = (6,  28, 3.2, (173, 255, 47)),
-    PEACH      = (7,  30, 3.5, (255, 218, 185)),
-    PINEAPPLE  = (8,  35, 4.5, (255, 255, 0)),
-    MELON      = (9,  40, 5.0, (196, 254, 91)),
-    WATERMELON = (10, 50, 6.0, (0, 255, 0)),
+    CHERRY     = (0, 10, 1.0, (255, 0, 0))
+    STRAWBERRY = (1, 12, 1.2, (255, 105, 180))
+    GRAPE      = (2, 14, 1.4, (128, 0, 128))
+    DEKOPON    = (3, 18, 2.0, (255, 165, 0))
+    ORANGE     = (4, 20, 2.5, (255, 165, 0))
+    APPLE      = (5, 25, 3.0, (255, 0, 0))
+    PEAR       = (6, 28, 3.2, (173, 255, 47))
+    PEACH      = (7, 30, 3.5, (255, 218, 185))
+    PINEAPPLE  = (8, 35, 4.5, (255, 255, 0))
+    MELON      = (9, 40, 5.0, (196, 254, 91))
+    WATERMELON = (10, 50, 6.0, (0, 255, 0))
 
     def __init__(self, id: int, radius: int, mass: int, color: tuple[int, int, int]) -> None:
         self.id = id
