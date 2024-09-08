@@ -37,23 +37,25 @@ space = pymunk.Space()
 space.gravity = (0.0, 900.0)
 
 
+# Fruit(id, radius, mass, color)
 class Fruit(Enum):
-    CHERRY = (0, 10, 1.0)
-    STRAWBERRY = (1, 12, 1.2)
-    GRAPE = (2, 14, 1.4)
-    DEKOPON = (3, 18, 2.0)
-    ORANGE = (4, 20, 2.5)
-    APPLE = (5, 25, 3.0)
-    PEAR = (6, 28, 3.2)
-    PEACH = (7, 30, 3.5)
-    PINEAPPLE = (8, 35, 4.5)
-    MELON = (9, 40, 5.0)
-    WATERMELON = (10, 50, 6.0)
+    CHERRY = (0, 10, 1.0, (255, 0, 0))    
+    STRAWBERRY = (1, 12, 1.2, (255, 105, 180))
+    GRAPE = (2, 14, 1.4, (128, 0, 128))       
+    DEKOPON = (3, 18, 2.0, (255, 165, 0))     
+    ORANGE = (4, 20, 2.5, (255, 165, 0))      
+    APPLE = (5, 25, 3.0, (255, 0, 0))      
+    PEAR = (6, 28, 3.2, (173, 255, 47))
+    PEACH = (7, 30, 3.5, (255, 218, 185))    
+    PINEAPPLE = (8, 35, 4.5, (255, 255, 0))   
+    MELON = (9, 40, 5.0, (196, 254, 91))
+    WATERMELON = (10, 50, 6.0, (0, 255, 0))  
 
-    def __init__(self, id: int, radius: int, mass: int) -> None:
+    def __init__(self, id: int, radius: int, mass: int, color: tuple[int, int, int]) -> None:
         self.id = id
         self.radius = radius
         self.mass = mass
+        self.color = color
 
 
 def create_static_boundaries() -> None:
@@ -135,9 +137,20 @@ def spawn_new_fruit_post_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, dat
     """
     contact_point = arbiter.contact_point_set.points[0].point_a
     new_x, new_y = contact_point[0], contact_point[1]
-    create_circle(50, 25, (new_x, new_y))
+    # create_circle(50, 25, (new_x, new_y))
 
     return True
+
+
+def draw_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
+    """Renders a fruit to the screen.
+    
+    Args:
+        fruit: The type of Fruit to draw.
+        position: The position to draw the fruit.
+    """
+
+    pygame.draw.circle(screen, fruit.color, position, fruit.radius)
 
 
 # Collision configuration
@@ -168,7 +181,9 @@ while running:
     # Render shapes in the Pymunk space
     for shape in space.shapes:
         if isinstance(shape, pymunk.Circle):
-            pygame.draw.circle(screen, "blue", shape.body.position, shape.radius)
+            fruit = shape.custom_data['fruit']  # Extract the fruit attribute from the shape
+            position = shape.body.position
+            draw_fruit(fruit, position)
         if isinstance(shape, pymunk.Segment):
             pygame.draw.line(screen, "white", shape.a, shape.b, 5)
 
