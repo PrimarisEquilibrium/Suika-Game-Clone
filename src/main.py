@@ -38,19 +38,25 @@ space.gravity = (0.0, 900.0)
 
 
 class Fruit(Enum):
-    CHERRY = 1
-    STRAWBERRY = 2
-    GRAPE = 3
-    DEKOPON = 4
-    ORANGE = 5
-    APPLE = 6
-    PEAR = 7
-    PEACH = 8
-    PINEAPPLE = 9
-    MELON = 10
-    WATERMELON = 11
+    CHERRY = (0, 10, 1.0)
+    STRAWBERRY = (1, 12, 1.2)
+    GRAPE = (2, 14, 1.4)
+    DEKOPON = (3, 18, 2.0)
+    ORANGE = (4, 20, 2.5)
+    APPLE = (5, 25, 3.0)
+    PEAR = (6, 28, 3.2)
+    PEACH = (7, 30, 3.5)
+    PINEAPPLE = (8, 35, 4.5)
+    MELON = (9, 40, 5.0)
+    WATERMELON = (10, 50, 6.0)
+
+    def __init__(self, id: int, radius: int, mass: int) -> None:
+        self.id = id
+        self.radius = radius
+        self.mass = mass
+
+print(Fruit.CHERRY)
 MAX_STARTING_FRUIT = Fruit.GRAPE  # Determines the largest fruit spawnable
-# print(list(Fruit)[:MAX_STARTING_FRUIT.value])
 
 
 def create_static_boundaries() -> None:
@@ -58,9 +64,9 @@ def create_static_boundaries() -> None:
 
     static_body = space.static_body
     static_lines = [
-        pymunk.Segment(static_body, (LEFT, TOP), (LEFT, BOTTOM), 6.0),
-        pymunk.Segment(static_body, (RIGHT, TOP), (RIGHT, BOTTOM), 6.0),
-        pymunk.Segment(static_body, (LEFT, TOP), (RIGHT, TOP), 6.0),
+        pymunk.Segment(static_body, (LEFT, TOP), (LEFT, BOTTOM), 5.0),
+        pymunk.Segment(static_body, (RIGHT, TOP), (RIGHT, BOTTOM), 5.0),
+        pymunk.Segment(static_body, (LEFT, TOP), (RIGHT, TOP), 5.0),
     ]
     for line in static_lines:
         line.elasticity = 0.95
@@ -68,13 +74,14 @@ def create_static_boundaries() -> None:
     space.add(*static_lines)
 
 
-def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
+def create_circle(mass: int, radius: int, position: tuple[int, int], **custom_data: dict[str, Any]) -> None:
     """Adds a circle with the given properties to the Pymunk physics space.
     
     Args:
         mass: The mass of the circle.
         radius: The radius of the circle.
         position: The initial position of the circle.
+        custom_data: Additional custom attributes to add to the circle Shape.
     """
 
     inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
@@ -86,8 +93,17 @@ def create_circle(mass: int, radius: int, position: tuple[int, int]) -> None:
     shape.friction = 0.8
     shape.collision_type = 1
 
+    # Add custom attributes to the shape
+    for key, value in custom_data.items():
+        setattr(shape, key, value)
+
     space.add(body, shape)
-    
+
+
+def create_random_fruit(position: tuple[int, int]) -> None:
+    fruit = random.choice(list(Fruit))
+    create_circle(fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
+
 
 def delete_shapes_pre_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
     """Deletes two shapes if they collide using Pymunk collision handling.
@@ -140,7 +156,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, _ = pygame.mouse.get_pos()
             mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
-            create_circle(50, 25, (mouse_x, 50))
+            create_random_fruit((mouse_x, 50))
 
     screen.fill("black")
 
@@ -155,9 +171,9 @@ while running:
     # Render shapes in the Pymunk space
     for shape in space.shapes:
         if isinstance(shape, pymunk.Circle):
-            pygame.draw.circle(screen, "blue", shape.body.position, 25)
+            pygame.draw.circle(screen, "blue", shape.body.position, shape.radius)
         if isinstance(shape, pymunk.Segment):
-            pygame.draw.line(screen, "white", shape.a, shape.b, 10)
+            pygame.draw.line(screen, "white", shape.a, shape.b, 5)
 
     # space.debug_draw(options)
     pygame.display.flip()
