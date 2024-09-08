@@ -55,9 +55,6 @@ class Fruit(Enum):
         self.radius = radius
         self.mass = mass
 
-print(Fruit.CHERRY)
-MAX_STARTING_FRUIT = Fruit.GRAPE  # Determines the largest fruit spawnable
-
 
 def create_static_boundaries() -> None:
     """Initializes the game boundary with static line segments"""
