@@ -1,8 +1,10 @@
 import pygame
+import random
 import numpy
 import pymunk
 import pymunk.pygame_util
 from typing import Any
+from enum import Enum
 
 
 pygame.init()
@@ -33,6 +35,22 @@ steps_per_frame = 1
 # Space Config
 space = pymunk.Space()
 space.gravity = (0.0, 900.0)
+
+
+class Fruit(Enum):
+    CHERRY = 1
+    STRAWBERRY = 2
+    GRAPE = 3
+    DEKOPON = 4
+    ORANGE = 5
+    APPLE = 6
+    PEAR = 7
+    PEACH = 8
+    PINEAPPLE = 9
+    MELON = 10
+    WATERMELON = 11
+MAX_STARTING_FRUIT = Fruit.GRAPE  # Determines the largest fruit spawnable
+# print(list(Fruit)[:MAX_STARTING_FRUIT.value])
 
 
 def create_static_boundaries() -> None:
