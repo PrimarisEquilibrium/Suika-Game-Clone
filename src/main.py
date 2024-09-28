@@ -119,6 +119,17 @@ def create_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
     create_circle(fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
 
 
+def get_fruit_from_shape(shape: pymunk.Shape) -> Fruit:
+    return shape.custom_data["fruit"]
+
+
+def get_fruits_from_shape(*shapes: pymunk.Shape) -> list[Fruit]:
+    fruits = []
+    for shape in shapes:
+        fruits.append(get_fruit_from_shape(shape))
+    return fruits
+
+
 def create_random_fruit(position: tuple[int, int]) -> None:
     fruit = random.choice(list(Fruit))
     create_fruit(fruit, position)
@@ -136,7 +147,7 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
         True, as the collision has been processed.
     """
     shape1, shape2 = arbiter.shapes
-    fruit1, fruit2 = shape1.custom_data["fruit"], shape2.custom_data["fruit"]
+    fruit1, fruit2 = get_fruits_from_shape(shape1, shape2)
 
     if fruit1.id == fruit2.id:
         print("Merge!")
@@ -210,7 +221,7 @@ while running:
     # Render shapes in the Pymunk space
     for shape in space.shapes:
         if isinstance(shape, pymunk.Circle):
-            fruit = shape.custom_data['fruit']  # Extract the fruit attribute from the shape
+            fruit = get_fruit_from_shape(shape)
             position = shape.body.position
             draw_fruit(fruit, position)
         if isinstance(shape, pymunk.Segment):
