@@ -130,8 +130,11 @@ def get_fruits_from_shape(*shapes: pymunk.Shape) -> list[Fruit]:
     return fruits
 
 
+MAX_FRUIT_TO_SPAWN = Fruit.APPLE
 def create_random_fruit(position: tuple[int, int]) -> None:
     fruit = random.choice(list(Fruit))
+    while fruit.id > MAX_FRUIT_TO_SPAWN.id:
+        fruit = random.choice(list(Fruit))
     create_fruit(fruit, position)
 
 
