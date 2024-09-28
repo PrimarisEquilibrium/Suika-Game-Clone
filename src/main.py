@@ -15,12 +15,14 @@ SCREEN_HEIGHT = 720
 # Relative coordinate landmarks
 CTR_X = SCREEN_WIDTH / 2
 CTR_Y = SCREEN_HEIGHT / 2
-padding = 200  # Distance boundary sides are from the center of the screen
+# Distance boundary sides are from the center of the screen
+x_padding = 200
+y_padding = 250
 # Coordinates of the game boundary
-LEFT = CTR_X - padding
-TOP = CTR_Y + padding
-BOTTOM = CTR_Y - padding
-RIGHT = CTR_X + padding
+LEFT = CTR_X - x_padding
+TOP = CTR_Y + y_padding
+BOTTOM = CTR_Y - y_padding
+RIGHT = CTR_X + x_padding
 
 # Pygame Config
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
