@@ -20,6 +20,8 @@ A basic Suika game clone made using Python, Pygame, and Pymunk.
      c. Fruits are able to collide with each other, the larger the fruit the larger the mass. [DONE]
 
     4. Fruit Merges
+     a. Allow fruits to be merged into higher tiers.
+     b. New fruits spawn at the collision point of the two collided fruits.
     
     5. Scoring
 
