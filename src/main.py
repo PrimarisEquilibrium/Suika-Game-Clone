@@ -150,8 +150,6 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
     fruit1, fruit2 = get_fruits_from_shape(shape1, shape2)
 
     if fruit1.id == fruit2.id:
-        print("Merge!")
-
         next_fruit_id = fruit1.id + 1
         for fruit in Fruit:
             if fruit.id == next_fruit_id:
@@ -178,6 +176,27 @@ def draw_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
     pygame.draw.circle(screen, fruit.color, position, fruit.radius)
 
 
+def render_pymunk_space(space: pymunk.Space) -> None:
+    """Renders the Pymunk space.
+    
+    Note: Only handles Fruits and Segments
+
+    Args:
+        space: The Pymunk space to render.
+
+    """
+
+    for shape in space.shapes:
+        if isinstance(shape, pymunk.Circle):
+            # If circle is a fruit
+            if hasattr(shape, "custom_data") and "fruit" in shape.custom_data:
+                fruit = get_fruit_from_shape(shape)
+                position = shape.body.position
+                draw_fruit(fruit, position)
+        if isinstance(shape, pymunk.Segment):
+            pygame.draw.line(screen, "white", shape.a, shape.b, 5)
+
+
 # Collision configuration
 handler = space.add_collision_handler(1, 1)
 handler.pre_solve = handle_fruit_collision
@@ -202,14 +221,7 @@ while running:
     for _ in range(1):
         space.step(DT)
 
-    # Render shapes in the Pymunk space
-    for shape in space.shapes:
-        if isinstance(shape, pymunk.Circle):
-            fruit = get_fruit_from_shape(shape)
-            position = shape.body.position
-            draw_fruit(fruit, position)
-        if isinstance(shape, pymunk.Segment):
-            pygame.draw.line(screen, "white", shape.a, shape.b, 5)
+    render_pymunk_space(space)
 
     # space.debug_draw(options)
     pygame.display.flip()
