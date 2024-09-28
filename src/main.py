@@ -107,9 +107,21 @@ def create_circle(mass: int, radius: int, position: tuple[int, int], **custom_da
     space.add(body, shape)
 
 
+def create_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
+    """Creates a fruit with its attributes.
+
+    Note: ('fruit' custom_data is already assigned)
+    
+    Args:
+        fruit: The fruit to spawn.
+        position: The position of the fruit.
+    """
+    create_circle(fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
+
+
 def create_random_fruit(position: tuple[int, int]) -> None:
     fruit = random.choice(list(Fruit))
-    create_circle(fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
+    create_fruit(fruit, position)
 
 
 def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
@@ -132,7 +144,7 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
         next_fruit_id = fruit1.id + 1
         for fruit in Fruit:
             if fruit.id == next_fruit_id:
-                create_circle(fruit.mass, fruit.radius, shape1.body.position, custom_data={"fruit": fruit})
+                create_fruit(fruit, shape1.body.position)
 
         # Delete both the shape and the body
         space.remove(shape1, shape1.body)
