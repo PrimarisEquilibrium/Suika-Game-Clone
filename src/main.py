@@ -155,32 +155,16 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
         next_fruit_id = fruit1.id + 1
         for fruit in Fruit:
             if fruit.id == next_fruit_id:
-                create_fruit(fruit, shape1.body.position)
+                # Delete original fruits
+                space.remove(shape1, shape1.body)
+                space.remove(shape2, shape2.body)
 
-        # Delete both the shape and the body
-        space.remove(shape1, shape1.body)
-        space.remove(shape2, shape2.body)
-
+                # Spawn new fruit at the contact point of the two collided fruits
+                contact_point = arbiter.contact_point_set.points[0].point_a
+                new_x, new_y = contact_point[0], contact_point[1]
+                create_fruit(fruit, (new_x, new_y))
 
     return True  # Collision should be processed
-
-
-# def spawn_new_fruit_post_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
-#     """Spawns a new shape at the contact point between two collided shapes
-    
-#     Args:
-#         arbiter: Information about the two collided shapes.
-#         space: The space the collision occured in.
-#         data: Additional information required for handling the collision.
-    
-#     Returns:
-#         True, as the collision has been processed.
-#     """
-#     contact_point = arbiter.contact_point_set.points[0].point_a
-#     new_x, new_y = contact_point[0], contact_point[1]
-#     # create_circle(50, 25, (new_x, new_y))
-
-#     return True
 
 
 def draw_fruit(fruit: Fruit, position: tuple[int, int]) -> None:

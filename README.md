@@ -21,7 +21,7 @@ A basic Suika game clone made using Python, Pygame, and Pymunk.
 
     4. Fruit Merges
      a. Allow fruits to be merged into higher tiers. [DONE]
-     b. New fruits spawn at the collision point of the two collided fruits.
+     b. New fruits spawn at the collision point of the two collided fruits. [DONE]
     
     5. Scoring
 
