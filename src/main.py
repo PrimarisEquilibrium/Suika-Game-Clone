@@ -112,8 +112,8 @@ def create_random_fruit(position: tuple[int, int]) -> None:
     create_circle(fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
 
 
-def delete_shapes_pre_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
-    """Deletes two shapes if they collide using Pymunk collision handling.
+def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
+    """Handles fruit collisions
     
     Args:
         arbiter: Information about the two collided shapes.
@@ -124,30 +124,40 @@ def delete_shapes_pre_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: 
         True, as the collision has been processed.
     """
     shape1, shape2 = arbiter.shapes
+    fruit1, fruit2 = shape1.custom_data["fruit"], shape2.custom_data["fruit"]
 
-    # Delete both the shape and the body
-    space.remove(shape1, shape1.body)
-    space.remove(shape2, shape2.body)
+    if fruit1.id == fruit2.id:
+        print("Merge!")
+
+        next_fruit_id = fruit1.id + 1
+        for fruit in Fruit:
+            if fruit.id == next_fruit_id:
+                create_circle(fruit.mass, fruit.radius, shape1.body.position, custom_data={"fruit": fruit})
+
+        # Delete both the shape and the body
+        space.remove(shape1, shape1.body)
+        space.remove(shape2, shape2.body)
+
 
     return True  # Collision should be processed
 
 
-def spawn_new_fruit_post_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
-    """Spawns a new shape at the contact point between two collided shapes
+# def spawn_new_fruit_post_solve(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
+#     """Spawns a new shape at the contact point between two collided shapes
     
-    Args:
-        arbiter: Information about the two collided shapes.
-        space: The space the collision occured in.
-        data: Additional information required for handling the collision.
+#     Args:
+#         arbiter: Information about the two collided shapes.
+#         space: The space the collision occured in.
+#         data: Additional information required for handling the collision.
     
-    Returns:
-        True, as the collision has been processed.
-    """
-    contact_point = arbiter.contact_point_set.points[0].point_a
-    new_x, new_y = contact_point[0], contact_point[1]
-    # create_circle(50, 25, (new_x, new_y))
+#     Returns:
+#         True, as the collision has been processed.
+#     """
+#     contact_point = arbiter.contact_point_set.points[0].point_a
+#     new_x, new_y = contact_point[0], contact_point[1]
+#     # create_circle(50, 25, (new_x, new_y))
 
-    return True
+#     return True
 
 
 def draw_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
@@ -163,8 +173,7 @@ def draw_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
 
 # Collision configuration
 handler = space.add_collision_handler(1, 1)
-handler.pre_solve = delete_shapes_pre_solve
-handler.post_solve = spawn_new_fruit_post_solve
+handler.pre_solve = handle_fruit_collision
 
 create_static_boundaries()
 while running:
