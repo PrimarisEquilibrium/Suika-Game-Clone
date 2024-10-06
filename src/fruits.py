@@ -33,17 +33,17 @@ class Fruit(Enum):
         self.radius = radius
         self.mass = mass
         self.color = color
+    
+    @staticmethod
+    def get_fruit_from_shape(shape: pymunk.Shape):
+        return shape.custom_data["fruit"]
 
-
-def get_fruit_from_shape(shape: pymunk.Shape) -> Fruit:
-    return shape.custom_data["fruit"]
-
-
-def get_fruits_from_shape(*shapes: pymunk.Shape) -> list[Fruit]:
-    fruits = []
-    for shape in shapes:
-        fruits.append(get_fruit_from_shape(shape))
-    return fruits
+    @staticmethod
+    def get_fruits_from_shape(*shapes: pymunk.Shape):
+        fruits = []
+        for shape in shapes:
+            fruits.append(Fruit.get_fruit_from_shape(shape))
+        return fruits
 
 
 def draw_fruit(screen: pygame.Surface, fruit: Fruit, position: tuple[int, int]) -> None:

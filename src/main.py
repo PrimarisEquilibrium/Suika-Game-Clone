@@ -6,7 +6,7 @@ import pymunk.pygame_util
 from typing import Any
 
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM, MAX_FRUIT_TO_SPAWN
-from fruits import Fruit, draw_fruit, create_fruit, get_fruit_from_shape, get_fruits_from_shape, create_random_fruit
+from fruits import Fruit, draw_fruit, create_fruit, create_random_fruit
 
 
 pygame.init()
@@ -53,7 +53,7 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
         True, as the collision has been processed.
     """
     shape1, shape2 = arbiter.shapes
-    fruit1, fruit2 = get_fruits_from_shape(shape1, shape2)
+    fruit1, fruit2 = Fruit.get_fruits_from_shape(shape1, shape2)
 
     if fruit1.id == fruit2.id:
         next_fruit_id = fruit1.id + 1
@@ -85,7 +85,7 @@ def render_pymunk_space(space: pymunk.Space) -> None:
         if isinstance(shape, pymunk.Circle):
             # If circle is a fruit
             if hasattr(shape, "custom_data") and "fruit" in shape.custom_data:
-                fruit = get_fruit_from_shape(shape)
+                fruit = Fruit.get_fruit_from_shape(shape)
                 position = shape.body.position
                 draw_fruit(screen, fruit, position)
         if isinstance(shape, pymunk.Segment):
