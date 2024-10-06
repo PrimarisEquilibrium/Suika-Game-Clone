@@ -16,8 +16,11 @@ SCREEN_HEIGHT = 720
 CTR_X = SCREEN_WIDTH / 2
 CTR_Y = SCREEN_HEIGHT / 2
 # Distance boundary sides are from the center of the screen
-x_padding = 200
-y_padding = 250
+X_RATIO = 5
+Y_RATIO = 6
+RATIO_SCALE = min(SCREEN_HEIGHT / 18, SCREEN_WIDTH / 32)
+x_padding = X_RATIO * RATIO_SCALE
+y_padding = Y_RATIO * RATIO_SCALE
 # Coordinates of the game boundary
 LEFT = CTR_X - x_padding
 TOP = CTR_Y + y_padding
@@ -49,17 +52,17 @@ class Fruit(Enum):
         color: RGB color of the fruit.
     """
 
-    CHERRY     = (0, 10, 1.0, (255, 0, 0))
-    STRAWBERRY = (1, 12, 1.2, (255, 105, 180))
-    GRAPE      = (2, 14, 1.4, (128, 0, 128))
-    DEKOPON    = (3, 18, 2.0, (255, 165, 0))
-    ORANGE     = (4, 20, 2.5, (255, 165, 0))
-    APPLE      = (5, 25, 3.0, (255, 0, 0))
-    PEAR       = (6, 28, 3.2, (173, 255, 47))
-    PEACH      = (7, 30, 3.5, (255, 218, 185))
-    PINEAPPLE  = (8, 35, 4.5, (255, 255, 0))
-    MELON      = (9, 40, 5.0, (196, 254, 91))
-    WATERMELON = (10, 50, 6.0, (0, 255, 0))
+    CHERRY     = (0, 12, 1.0, (239, 7, 10))
+    STRAWBERRY = (1, 16, 1.2, (251, 108, 75))
+    GRAPE      = (2, 24, 1.4, (166, 108, 252))
+    DEKOPON    = (3, 30, 2.0, (255, 185, 2))
+    ORANGE     = (4, 36, 2.5, (254, 140, 32))
+    APPLE      = (5, 44, 3.0, (244, 22, 22))
+    PEAR       = (6, 48, 3.2, (255, 249, 103))
+    PEACH      = (7, 56, 3.5, (254, 203, 197))
+    PINEAPPLE  = (8, 62, 4.5, (242, 243, 23))
+    MELON      = (9, 70, 5.0, (162, 239, 30))
+    WATERMELON = (10, 80, 6.0, (33, 126, 22))
 
     def __init__(self, id: int, radius: int, mass: int, color: tuple[int, int, int]) -> None:
         self.id = id
