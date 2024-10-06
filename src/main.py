@@ -4,28 +4,12 @@ import numpy
 import pymunk
 import pymunk.pygame_util
 from typing import Any
-from enum import Enum
+
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM
+from fruits import Fruit
 
 
 pygame.init()
-
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
-
-# Relative coordinate landmarks
-CTR_X = SCREEN_WIDTH / 2
-CTR_Y = SCREEN_HEIGHT / 2
-# Distance boundary sides are from the center of the screen
-X_RATIO = 5
-Y_RATIO = 6
-RATIO_SCALE = min(SCREEN_HEIGHT / 18, SCREEN_WIDTH / 32)
-x_padding = X_RATIO * RATIO_SCALE
-y_padding = Y_RATIO * RATIO_SCALE
-# Coordinates of the game boundary
-LEFT = CTR_X - x_padding
-TOP = CTR_Y + y_padding
-BOTTOM = CTR_Y - y_padding
-RIGHT = CTR_X + x_padding
 
 # Pygame Config
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -40,35 +24,6 @@ steps_per_frame = 1
 # Space Config
 space = pymunk.Space()
 space.gravity = (0.0, 900.0)
-
-
-class Fruit(Enum):
-    """Represents a Suika fruit with its properties.
-    
-    Attributes:
-        id: Unique identifier for the fruit.
-        radius: Radius of the fruit.
-        mass: Mass of the fruit.
-        color: RGB color of the fruit.
-    """
-
-    CHERRY     = (0, 12, 1.0, (239, 7, 10))
-    STRAWBERRY = (1, 16, 1.2, (251, 108, 75))
-    GRAPE      = (2, 24, 1.4, (166, 108, 252))
-    DEKOPON    = (3, 30, 2.0, (255, 185, 2))
-    ORANGE     = (4, 36, 2.5, (254, 140, 32))
-    APPLE      = (5, 44, 3.0, (244, 22, 22))
-    PEAR       = (6, 48, 3.2, (255, 249, 103))
-    PEACH      = (7, 56, 3.5, (254, 203, 197))
-    PINEAPPLE  = (8, 62, 4.5, (242, 243, 23))
-    MELON      = (9, 70, 5.0, (162, 239, 30))
-    WATERMELON = (10, 80, 6.0, (33, 126, 22))
-
-    def __init__(self, id: int, radius: int, mass: int, color: tuple[int, int, int]) -> None:
-        self.id = id
-        self.radius = radius
-        self.mass = mass
-        self.color = color
 
 
 def create_static_boundaries() -> None:
