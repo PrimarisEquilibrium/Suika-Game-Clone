@@ -7,6 +7,7 @@ from typing import Any
 
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM
 from fruits import Fruit
+from utils import create_circle
 
 
 pygame.init()
@@ -41,32 +42,6 @@ def create_static_boundaries() -> None:
     space.add(*static_lines)
 
 
-def create_circle(mass: int, radius: int, position: tuple[int, int], **custom_data: dict[str, Any]) -> None:
-    """Adds a circle with the given properties to the Pymunk physics space.
-    
-    Args:
-        mass: The mass of the circle.
-        radius: The radius of the circle.
-        position: The initial position of the circle.
-        custom_data: Additional custom attributes to add to the circle Shape.
-    """
-
-    inertia = pymunk.moment_for_circle(mass, 0, radius, (0, 0))
-    body = pymunk.Body(mass, inertia)
-    body.position = position
-
-    shape = pymunk.Circle(body, radius)
-    shape.elasticity = 0
-    shape.friction = 0.8
-    shape.collision_type = 1
-
-    # Add custom attributes to the shape
-    for key, value in custom_data.items():
-        setattr(shape, key, value)
-
-    space.add(body, shape)
-
-
 def create_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
     """Creates a fruit with its attributes.
 
@@ -76,7 +51,7 @@ def create_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
         fruit: The fruit to spawn.
         position: The position of the fruit.
     """
-    create_circle(fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
+    create_circle(space, fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
 
 
 def get_fruit_from_shape(shape: pymunk.Shape) -> Fruit:
