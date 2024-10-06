@@ -1,4 +1,10 @@
+import pymunk
+import pygame
+import random
 from enum import Enum
+
+from utils import create_circle
+
 
 class Fruit(Enum):
     """Represents a Suika fruit with its properties.
@@ -27,3 +33,54 @@ class Fruit(Enum):
         self.radius = radius
         self.mass = mass
         self.color = color
+
+
+def get_fruit_from_shape(shape: pymunk.Shape) -> Fruit:
+    return shape.custom_data["fruit"]
+
+
+def get_fruits_from_shape(*shapes: pymunk.Shape) -> list[Fruit]:
+    fruits = []
+    for shape in shapes:
+        fruits.append(get_fruit_from_shape(shape))
+    return fruits
+
+
+def draw_fruit(screen: pygame.Surface, fruit: Fruit, position: tuple[int, int]) -> None:
+    """Renders a fruit to the screen.
+    
+    Args:
+        screen: The screen to add the fruit in.
+        fruit: The type of Fruit to draw.
+        position: The position to draw the fruit.
+    """
+
+    pygame.draw.circle(screen, fruit.color, position, fruit.radius)
+
+
+def create_fruit(space: pymunk.Space, fruit: Fruit, position: tuple[int, int]) -> None:
+    """Creates a fruit with its attributes.
+
+    Note: ('fruit' custom_data is already assigned)
+    
+    Args:
+        space: The Pymunk space to add the fruit in.
+        fruit: The fruit to spawn.
+        position: The position of the fruit.
+    """
+    create_circle(space, fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
+
+
+def create_random_fruit(space: pymunk.Space, max_fruit: Fruit, position: tuple[int, int]) -> None:
+    """Creates a random fruit.
+    
+    Args:
+        space: The Pymunk space to add the fruit in.
+        max_fruit: The largest size fruit that can be spawned (inclusive).
+        position: The position of the fruit.
+    """
+
+    fruit = random.choice(list(Fruit))
+    while fruit.id > max_fruit.id:
+        fruit = random.choice(list(Fruit))
+    create_fruit(space, fruit, position)

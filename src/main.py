@@ -5,9 +5,8 @@ import pymunk
 import pymunk.pygame_util
 from typing import Any
 
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM
-from fruits import Fruit
-from utils import create_circle
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM, MAX_FRUIT_TO_SPAWN
+from fruits import Fruit, draw_fruit, create_fruit, get_fruit_from_shape, get_fruits_from_shape, create_random_fruit
 
 
 pygame.init()
@@ -42,37 +41,6 @@ def create_static_boundaries() -> None:
     space.add(*static_lines)
 
 
-def create_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
-    """Creates a fruit with its attributes.
-
-    Note: ('fruit' custom_data is already assigned)
-    
-    Args:
-        fruit: The fruit to spawn.
-        position: The position of the fruit.
-    """
-    create_circle(space, fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
-
-
-def get_fruit_from_shape(shape: pymunk.Shape) -> Fruit:
-    return shape.custom_data["fruit"]
-
-
-def get_fruits_from_shape(*shapes: pymunk.Shape) -> list[Fruit]:
-    fruits = []
-    for shape in shapes:
-        fruits.append(get_fruit_from_shape(shape))
-    return fruits
-
-
-MAX_FRUIT_TO_SPAWN = Fruit.APPLE
-def create_random_fruit(position: tuple[int, int]) -> None:
-    fruit = random.choice(list(Fruit))
-    while fruit.id > MAX_FRUIT_TO_SPAWN.id:
-        fruit = random.choice(list(Fruit))
-    create_fruit(fruit, position)
-
-
 def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
     """Handles fruit collisions
     
@@ -98,20 +66,9 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
                 # Spawn new fruit at the contact point of the two collided fruits
                 contact_point = arbiter.contact_point_set.points[0].point_a
                 new_x, new_y = contact_point[0], contact_point[1]
-                create_fruit(fruit, (new_x, new_y))
+                create_fruit(space, fruit, (new_x, new_y))
 
     return True  # Collision should be processed
-
-
-def draw_fruit(fruit: Fruit, position: tuple[int, int]) -> None:
-    """Renders a fruit to the screen.
-    
-    Args:
-        fruit: The type of Fruit to draw.
-        position: The position to draw the fruit.
-    """
-
-    pygame.draw.circle(screen, fruit.color, position, fruit.radius)
 
 
 def render_pymunk_space(space: pymunk.Space) -> None:
@@ -130,7 +87,7 @@ def render_pymunk_space(space: pymunk.Space) -> None:
             if hasattr(shape, "custom_data") and "fruit" in shape.custom_data:
                 fruit = get_fruit_from_shape(shape)
                 position = shape.body.position
-                draw_fruit(fruit, position)
+                draw_fruit(screen, fruit, position)
         if isinstance(shape, pymunk.Segment):
             pygame.draw.line(screen, "white", shape.a, shape.b, 5)
 
@@ -147,7 +104,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, _ = pygame.mouse.get_pos()
             mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
-            create_random_fruit((mouse_x, 50))
+            create_random_fruit(space, MAX_FRUIT_TO_SPAWN, (mouse_x, 50))
 
     screen.fill("black")
 

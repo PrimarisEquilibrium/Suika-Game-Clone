@@ -1,3 +1,5 @@
+from fruits import Fruit
+
 # Absolute Screen Dimensions
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
@@ -18,3 +20,6 @@ LEFT = CTR_X - X_PADDING
 TOP = CTR_Y + Y_PADDING
 BOTTOM = CTR_Y - Y_PADDING
 RIGHT = CTR_X + X_PADDING
+
+# Largest size fruit that can be spawned initially
+MAX_FRUIT_TO_SPAWN = Fruit.APPLE
