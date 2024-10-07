@@ -2,6 +2,7 @@ import pygame
 import numpy
 import pymunk
 import pymunk.pygame_util
+import random
 from typing import Any
 
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM, MAX_FRUIT_TO_SPAWN
@@ -96,28 +97,44 @@ handler = space.add_collision_handler(1, 1)
 handler.pre_solve = handle_fruit_collision
 
 create_static_boundaries()
+
+current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
+on_cooldown = False
+cooldown_timer = 0
+cooldown_duration = 500 # In ms
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, _ = pygame.mouse.get_pos()
-            mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
-            create_random_fruit(space, MAX_FRUIT_TO_SPAWN, (mouse_x, 50))
+            if not on_cooldown:
+                # Create the fruit at the mouse location
+                mouse_x, _ = pygame.mouse.get_pos()
+                mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
+                create_fruit(space, current_fruit, (mouse_x, 50))
+                
+                # Change current fruit to spawn and start a cooldown timer
+                current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
+                on_cooldown = True
+                cooldown_timer = pygame.time.get_ticks()
 
     screen.fill("black")
 
-    mouse_x, _ = pygame.mouse.get_pos()
-    mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
+    # Once cooldown_duration passes turn off the cooldown
+    if pygame.time.get_ticks() - cooldown_timer >= cooldown_duration:
+        on_cooldown = False
     
-    pygame.draw.circle(screen, "white", (mouse_x, 50), 25)
+    # Only render the preview fruit when the cooldown is over
+    if not on_cooldown:
+        mouse_x, _ = pygame.mouse.get_pos()
+        mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
+        draw_fruit(screen, current_fruit, (mouse_x, 50))
     
     for _ in range(1):
         space.step(DT)
 
     render_pymunk_space(space)
 
-    # space.debug_draw(options)
     pygame.display.flip()
 
     clock.tick(FPS)

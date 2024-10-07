@@ -71,16 +71,17 @@ def create_fruit(space: pymunk.Space, fruit: Fruit, position: tuple[int, int]) -
     create_circle(space, fruit.mass, fruit.radius, position, custom_data={"fruit": fruit})
 
 
-def create_random_fruit(space: pymunk.Space, max_fruit: Fruit, position: tuple[int, int]) -> None:
-    """Creates a random fruit.
+def create_random_fruit(max_fruit: Fruit) -> Fruit:
+    """Creates a random fruit instance.
     
     Args:
-        space: The Pymunk space to add the fruit in.
         max_fruit: The largest size fruit that can be spawned (inclusive).
-        position: The position of the fruit.
+    
+    Returns:
+        Fruit: The randomly generated fruit.
     """
 
     fruit = random.choice(list(Fruit))
     while fruit.id > max_fruit.id:
         fruit = random.choice(list(Fruit))
-    create_fruit(space, fruit, position)
+    return fruit
