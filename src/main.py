@@ -2,7 +2,6 @@ import pygame
 import numpy
 import pymunk
 import pymunk.pygame_util
-import random
 from typing import Any
 
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, TOP, BOTTOM, MAX_FRUIT_TO_SPAWN
