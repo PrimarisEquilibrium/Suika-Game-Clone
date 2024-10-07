@@ -14,6 +14,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
+font = pygame.font.Font('freesansbold.ttf', 32)
 
 # Frame / Game Loop Properties
 FPS = 240.0
@@ -27,6 +28,9 @@ space.gravity = (0.0, 900.0)
 # Collision configuration
 handler = space.add_collision_handler(1, 1)
 handler.pre_solve = handle_fruit_collision
+
+# Player score
+score = 0
 
 
 def render_pymunk_space(space: pymunk.Space) -> None:
@@ -55,6 +59,7 @@ current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
 on_cooldown = False
 cooldown_timer = 0
 cooldown_duration = 500 # In ms
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -72,6 +77,11 @@ while running:
                 cooldown_timer = pygame.time.get_ticks()
 
     screen.fill("black")
+
+    text = font.render(str(score), True, "white")
+    textRect = text.get_rect()
+    textRect.center = (50, 50)
+    screen.blit(text, textRect)
 
     # Once cooldown_duration passes turn off the cooldown
     if pygame.time.get_ticks() - cooldown_timer >= cooldown_duration:
