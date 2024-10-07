@@ -2,10 +2,11 @@ import pygame
 import numpy
 import pymunk
 import pymunk.pygame_util
+from typing import Any
 
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, MAX_FRUIT_TO_SPAWN
 from fruits import Fruit, draw_fruit, create_fruit, create_random_fruit
-from physics import create_static_boundaries, handle_fruit_collision
+from physics import create_static_boundaries
 
 
 pygame.init()
@@ -24,10 +25,6 @@ steps_per_frame = 1
 # Space Config
 space = pymunk.Space()
 space.gravity = (0.0, 900.0)
-
-# Collision configuration
-handler = space.add_collision_handler(1, 1)
-handler.pre_solve = handle_fruit_collision
 
 # Player score
 score = 0
@@ -54,6 +51,42 @@ def render_pymunk_space(space: pymunk.Space) -> None:
             pygame.draw.line(screen, "white", shape.a, shape.b, 5)
 
 
+def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
+    """Handles fruit collisions
+    
+    Args:
+        arbiter: Information about the two collided shapes.
+        space: The space the collision occured in.
+        data: Additional information required for handling the collision.
+    
+    Returns:
+        True, as the collision has been processed.
+    """
+    global score
+    shape1, shape2 = arbiter.shapes
+    fruit1, fruit2 = Fruit.get_fruits_from_shape(shape1, shape2)
+    
+    if fruit1.id == fruit2.id:
+        next_fruit_id = fruit1.id + 1
+        for fruit in Fruit:
+            if fruit.id == next_fruit_id:
+                # Delete original fruits
+                space.remove(shape1, shape1.body)
+                space.remove(shape2, shape2.body)
+
+                # Spawn new fruit at the contact point of the two collided fruits
+                contact_point = arbiter.contact_point_set.points[0].point_a
+                new_x, new_y = contact_point[0], contact_point[1]
+                create_fruit(space, fruit, (new_x, new_y))
+
+                score += fruit.score
+
+    return True  # Collision should be processed
+
+# Collision configuration
+handler = space.add_collision_handler(1, 1)
+handler.pre_solve = handle_fruit_collision
+
 create_static_boundaries(space)
 current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
 on_cooldown = False
@@ -78,9 +111,9 @@ while running:
 
     screen.fill("black")
 
-    text = font.render(str(score), True, "white")
+    text = font.render(f"Score: {score}", True, "white")
     textRect = text.get_rect()
-    textRect.center = (50, 50)
+    textRect.center = (150, 75)
     screen.blit(text, textRect)
 
     # Once cooldown_duration passes turn off the cooldown
