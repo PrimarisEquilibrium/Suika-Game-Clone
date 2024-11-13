@@ -51,6 +51,19 @@ def render_pymunk_space(space: pymunk.Space) -> None:
             pygame.draw.line(screen, "white", shape.a, shape.b, 5)
 
 
+def is_shape_over_end_boundary(shape: pymunk.Shape) -> bool:
+    """Determines if a shape passed the end boundary y-position.
+    
+    Args:
+        shape: A pymunk shape.
+    
+    Returns:
+        True, if the shape collides with the end boundary; otherwise false.
+    """
+
+    return shape.point_query((shape.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
+
+
 def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
     """Handles fruit collisions
     
@@ -68,8 +81,8 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
 
     # Computes the distance the shape is away from the y-pos of the endgame boundary
     # A value less than 0 means the shape intersects the endgame boundary
-    is_shape1_over = shape1.point_query((shape1.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
-    is_shape2_over = shape2.point_query((shape2.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
+    is_shape1_over = is_shape_over_end_boundary(shape1)
+    is_shape2_over = is_shape_over_end_boundary(shape2)
 
     if (is_shape1_over or is_shape2_over):
         print("GAME OVER!")
