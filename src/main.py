@@ -69,7 +69,7 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
     # Computes the distance the shape is away from the y-pos of the endgame boundary
     # A value less than 0 means the shape intersects the endgame boundary
     is_shape1_over = shape1.point_query((shape1.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
-    is_shape2_over = shape2.point_query((shape1.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
+    is_shape2_over = shape2.point_query((shape2.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
 
     if (is_shape1_over or is_shape2_over):
         print("GAME OVER!")
