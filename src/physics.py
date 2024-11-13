@@ -6,6 +6,7 @@ def create_static_boundaries(space: pymunk.Space) -> None:
     """Initializes the game boundary with static line segments"""
 
     static_body = space.static_body
+
     static_lines = [
         pymunk.Segment(static_body, (LEFT, TOP), (LEFT, BOTTOM), 5.0),
         pymunk.Segment(static_body, (RIGHT, TOP), (RIGHT, BOTTOM), 5.0),

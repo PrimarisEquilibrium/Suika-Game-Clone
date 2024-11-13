@@ -23,3 +23,6 @@ RIGHT = CTR_X + X_PADDING
 
 # Largest size fruit that can be spawned initially
 MAX_FRUIT_TO_SPAWN = Fruit.APPLE
+
+# End game height limit
+ENDGAME_BOUNDARY_Y = BOTTOM - 25

@@ -4,7 +4,7 @@ import pymunk
 import pymunk.pygame_util
 from typing import Any
 
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, MAX_FRUIT_TO_SPAWN
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, MAX_FRUIT_TO_SPAWN, ENDGAME_BOUNDARY_Y
 from fruits import Fruit, draw_fruit, create_fruit, create_random_fruit
 from physics import create_static_boundaries
 
@@ -62,9 +62,17 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
     Returns:
         True, as the collision has been processed.
     """
-    global score
+    global score, running
     shape1, shape2 = arbiter.shapes
     fruit1, fruit2 = Fruit.get_fruits_from_shape(shape1, shape2)
+
+    # Computes the distance the shape is away from the y-pos of the endgame boundary
+    # A value less than 0 means the shape intersects the endgame boundary
+    is_shape1_over = shape1.point_query((shape1.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
+    is_shape2_over = shape2.point_query((shape1.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
+
+    if (is_shape1_over or is_shape2_over):
+        print("GAME OVER!")
     
     if fruit1.id == fruit2.id:
         next_fruit_id = fruit1.id + 1
