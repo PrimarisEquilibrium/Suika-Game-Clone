@@ -1,6 +1,26 @@
 import pymunk
 import pygame
-from typing import Any
+from typing import Any, Union
+
+
+class Button:
+    def __init__(self, position: tuple[int, int], width: int, height: int, text: str) -> None:
+        self.x, self.y = position
+        self.width = width
+        self.height = height
+        self.text = text
+    
+    def draw(self, screen: pygame.Surface) -> None:
+        button = pygame.rect.Rect(self.x, self.y, self.width, self.height)
+        pygame.draw.rect(screen, (52, 52, 52), button)
+        create_text(screen, self.text, 24, "white", button.center)
+    
+    def is_mouse_over(self) -> bool:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if mouse_x >= self.x and mouse_y >= self.y and mouse_x <= self.x + self.width and mouse_y <= self.y + self.height:
+            return True
+        return False
+
 
 def create_circle(space: pymunk.Space, mass: int, radius: int, position: tuple[int, int], **custom_data: dict[str, Any]) -> None:
     """Adds a circle with the given properties to the Pymunk physics space.
@@ -29,7 +49,7 @@ def create_circle(space: pymunk.Space, mass: int, radius: int, position: tuple[i
     space.add(body, shape)
 
 
-def create_text(screen: pygame.Surface, text: str, font_size: int, position: tuple[int, int]) -> None:
+def create_text(screen: pygame.Surface, text: str, font_size: int, color: Union[tuple[int, int, int], str], position: tuple[int, int]) -> None:
     """Outputs the given text to the pygame window.
     
     Args:
@@ -39,7 +59,7 @@ def create_text(screen: pygame.Surface, text: str, font_size: int, position: tup
     """
 
     font = pygame.font.Font('freesansbold.ttf', font_size)
-    text = font.render(text, True, "white")
+    text = font.render(text, True, color)
     textRect = text.get_rect()
     x, y = position
     textRect.center = (x, y)

@@ -7,7 +7,7 @@ from typing import Any
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, MAX_FRUIT_TO_SPAWN, ENDGAME_BOUNDARY_Y
 from fruits import Fruit, draw_fruit, create_fruit, create_random_fruit
 from physics import create_static_boundaries
-from utils import create_text
+from utils import create_text, Button
 
 
 def main() -> None:
@@ -18,7 +18,6 @@ def main() -> None:
     clock = pygame.time.Clock()
     running = True
     is_game_over = False
-    font = pygame.font.Font('freesansbold.ttf', 32)
 
     # Frame / Game Loop Properties
     FPS = 240.0
@@ -78,7 +77,7 @@ def main() -> None:
         Returns:
             True, as the collision has been processed.
         """
-        global score, running, is_game_over
+        nonlocal score, running, is_game_over
         shape1, shape2 = arbiter.shapes
         fruit1, fruit2 = Fruit.get_fruits_from_shape(shape1, shape2)
 
@@ -136,7 +135,7 @@ def main() -> None:
 
         screen.fill("black")
 
-        create_text(screen, f"Score: {score}", 32, (150, 75))
+        create_text(screen, f"Score: {score}", 32, "white", (150, 75))
 
         if not is_game_over:
             # Once cooldown_duration passes turn off the cooldown
@@ -159,15 +158,22 @@ def main() -> None:
             s.fill((0, 0, 0, 200))
             screen.blit(s, (0, 0))
 
-            create_text(screen, "Game Over!", 32, (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100))
-            create_text(screen, f"Score: {score}", 20, (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50))
-            create_text(screen, f"High Score: TBA", 16, (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20))
+            create_text(screen, "Game Over!", 32, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100))
+            create_text(screen, f"Score: {score}", 20, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50))
+            create_text(screen, f"High Score: TBA", 16, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20))
+
+            button = Button((SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 15), 200, 50, "Play Again?")
+            button.draw(screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEBUTTONDOWN and button.is_mouse_over():
+                    main()
 
         pygame.display.flip()
 
         clock.tick(FPS)
-
-        is_game_over = True
 
     pygame.quit()
 
