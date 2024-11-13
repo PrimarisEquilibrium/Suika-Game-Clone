@@ -1,4 +1,5 @@
 import pymunk
+import pygame
 from typing import Any
 
 def create_circle(space: pymunk.Space, mass: int, radius: int, position: tuple[int, int], **custom_data: dict[str, Any]) -> None:
@@ -26,3 +27,20 @@ def create_circle(space: pymunk.Space, mass: int, radius: int, position: tuple[i
         setattr(shape, key, value)
 
     space.add(body, shape)
+
+
+def create_text(screen: pygame.Surface, text: str, font_size: int, position: tuple[int, int]) -> None:
+    """Outputs the given text to the pygame window.
+    
+    Args:
+        screen: The screen to draw to.
+        font_size: The font_size of the text.
+        position: The position to draw the text.
+    """
+
+    font = pygame.font.Font('freesansbold.ttf', font_size)
+    text = font.render(text, True, "white")
+    textRect = text.get_rect()
+    x, y = position
+    textRect.center = (x, y)
+    screen.blit(text, textRect)
