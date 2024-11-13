@@ -15,6 +15,7 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 running = True
+is_game_over = False
 font = pygame.font.Font('freesansbold.ttf', 32)
 
 # Frame / Game Loop Properties
@@ -75,7 +76,7 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
     Returns:
         True, as the collision has been processed.
     """
-    global score, running
+    global score, running, is_game_over
     shape1, shape2 = arbiter.shapes
     fruit1, fruit2 = Fruit.get_fruits_from_shape(shape1, shape2)
 
@@ -85,7 +86,7 @@ def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: d
     is_shape2_over = is_shape_over_end_boundary(shape2)
 
     if (is_shape1_over or is_shape2_over):
-        print("GAME OVER!")
+        is_game_over = True
     
     if fruit1.id == fruit2.id:
         next_fruit_id = fruit1.id + 1
@@ -118,17 +119,18 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if not on_cooldown:
-                # Create the fruit at the mouse location
-                mouse_x, _ = pygame.mouse.get_pos()
-                mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
-                create_fruit(space, current_fruit, (mouse_x, 50))
-                
-                # Change current fruit to spawn and start a cooldown timer
-                current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
-                on_cooldown = True
-                cooldown_timer = pygame.time.get_ticks()
+        if not is_game_over:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if not on_cooldown:
+                    # Create the fruit at the mouse location
+                    mouse_x, _ = pygame.mouse.get_pos()
+                    mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
+                    create_fruit(space, current_fruit, (mouse_x, 50))
+                    
+                    # Change current fruit to spawn and start a cooldown timer
+                    current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
+                    on_cooldown = True
+                    cooldown_timer = pygame.time.get_ticks()
 
     screen.fill("black")
 
@@ -137,23 +139,53 @@ while running:
     textRect.center = (150, 75)
     screen.blit(text, textRect)
 
-    # Once cooldown_duration passes turn off the cooldown
-    if pygame.time.get_ticks() - cooldown_timer >= cooldown_duration:
-        on_cooldown = False
+    if not is_game_over:
+        # Once cooldown_duration passes turn off the cooldown
+        if pygame.time.get_ticks() - cooldown_timer >= cooldown_duration:
+            on_cooldown = False
+        
+        # Only render the preview fruit when the cooldown is over
+        if not on_cooldown:
+            mouse_x, _ = pygame.mouse.get_pos()
+            mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
+            draw_fruit(screen, current_fruit, (mouse_x, 50))
     
-    # Only render the preview fruit when the cooldown is over
-    if not on_cooldown:
-        mouse_x, _ = pygame.mouse.get_pos()
-        mouse_x = numpy.clip(mouse_x, LEFT + 10, RIGHT - 10)
-        draw_fruit(screen, current_fruit, (mouse_x, 50))
+        for _ in range(1):
+            space.step(DT)
     
-    for _ in range(1):
-        space.step(DT)
-
     render_pymunk_space(space)
+
+    if is_game_over:
+        s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        s.fill((0, 0, 0, 200))
+        screen.blit(s, (0, 0))
+
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render("Game Over!", True, "white")
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100)
+        screen.blit(text, textRect)
+
+        font = pygame.font.Font('freesansbold.ttf', 20)
+        font.set_italic(1)
+        text = font.render(f"Score: {score}", True, "white")
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50)
+        screen.blit(text, textRect)
+
+        font = pygame.font.Font('freesansbold.ttf', 16)
+        font.set_italic(1)
+        text = font.render(f"High Score: TBA", True, "white")
+        textRect = text.get_rect()
+        textRect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20)
+        screen.blit(text, textRect)
+
+        font.set_italic(0)
 
     pygame.display.flip()
 
     clock.tick(FPS)
+
+    is_game_over = True
 
 pygame.quit()
