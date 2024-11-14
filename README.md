@@ -26,7 +26,7 @@ A basic Suika game clone made using Python, Pygame, and Pymunk.
     
     5. Scoring
      a. When fruits merge add a certain number of points to the score. [DONE]
-     b. Store the user's highscore locally.
+     b. Store the user's highscore locally. [DONE]
     
     6. Game loop
      a. When a player drops a fruit and it intersects with the maximum height of the boundary end the game. [DONE]
