@@ -115,7 +115,7 @@ def main() -> None:
     current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
     on_cooldown = False
     cooldown_timer = 0
-    cooldown_duration = 500 # In ms
+    cooldown_duration = 1000 # In ms
 
     while running:
         for event in pygame.event.get():

@@ -83,3 +83,24 @@ def load_local_highscore() -> None:
         score = 0
         set_local_highscore(score)
     return score
+
+
+def draw_circle_image(screen: pygame.Surface, image_path: str, position: tuple[int, int], radius: int):
+    # Load and scale the image
+    image = pygame.image.load(image_path)
+    image = pygame.transform.scale(image, (radius * 2, radius * 2))
+
+    # Create a circle surface
+    circle_surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+    pygame.draw.circle(circle_surface, "white", (radius, radius), radius)
+
+    # Blit the image onto the circle surface
+    circle_surface.blit(image, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
+
+    # Get the rectangle for positioning
+    x, y = position
+    circle_rect = circle_surface.get_rect(center=(x, y))
+
+
+    # Draw the circle with the image on the screen
+    screen.blit(circle_surface, circle_rect.topleft)

@@ -3,7 +3,7 @@ import pygame
 import random
 from enum import Enum
 
-from utils import create_circle
+from utils import create_circle, draw_circle_image
 
 
 class Fruit(Enum):
@@ -57,7 +57,8 @@ def draw_fruit(screen: pygame.Surface, fruit: Fruit, position: tuple[int, int]) 
         position: The position to draw the fruit.
     """
 
-    pygame.draw.circle(screen, fruit.color, position, fruit.radius)
+    draw_circle_image(screen, "images\\Cherry.png", position, fruit.radius)
+    # pygame.draw.circle(screen, fruit.color, position, fruit.radius)
 
 
 def create_fruit(space: pymunk.Space, fruit: Fruit, position: tuple[int, int]) -> None:
