@@ -1,5 +1,6 @@
 import pymunk
 import pygame
+import pickle
 from typing import Any, Union
 
 
@@ -64,3 +65,21 @@ def create_text(screen: pygame.Surface, text: str, font_size: int, color: Union[
     x, y = position
     textRect.center = (x, y)
     screen.blit(text, textRect)
+
+
+def set_local_highscore(score: int) -> None:
+    scoreFile = "score.data"
+    fw = open(scoreFile, "wb")
+    pickle.dump(score, fw)
+    fw.close()
+
+
+def load_local_highscore() -> None:
+    scoreFile = "score.data"
+    try:
+        fd = open(scoreFile, "rb")
+        score = pickle.load(fd)
+    except FileNotFoundError:
+        score = 0
+        set_local_highscore(score)
+    return score

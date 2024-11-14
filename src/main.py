@@ -7,7 +7,7 @@ from typing import Any
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, MAX_FRUIT_TO_SPAWN, ENDGAME_BOUNDARY_Y
 from fruits import Fruit, draw_fruit, create_fruit, create_random_fruit
 from physics import create_static_boundaries
-from utils import create_text, Button
+from utils import create_text, Button, load_local_highscore, set_local_highscore
 
 
 def main() -> None:
@@ -30,6 +30,7 @@ def main() -> None:
 
     # Player score
     score = 0
+    highscore = load_local_highscore()
 
 
     def render_pymunk_space(space: pymunk.Space) -> None:
@@ -136,6 +137,7 @@ def main() -> None:
         screen.fill("black")
 
         create_text(screen, f"Score: {score}", 32, "white", (150, 75))
+        create_text(screen, f"Highscore: {highscore}", 24, "white", (150, 125))
 
         if not is_game_over:
             # Once cooldown_duration passes turn off the cooldown
@@ -160,7 +162,7 @@ def main() -> None:
 
             create_text(screen, "Game Over!", 32, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100))
             create_text(screen, f"Score: {score}", 20, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50))
-            create_text(screen, f"High Score: TBA", 16, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20))
+            create_text(screen, f"High Score: {max(score, highscore)}", 20, "white", (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 20))
 
             button = Button((SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 15), 200, 50, "Play Again?")
             button.draw(screen)
@@ -169,6 +171,8 @@ def main() -> None:
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN and button.is_mouse_over():
+                    if score > highscore:
+                        set_local_highscore(score)
                     main()
 
         pygame.display.flip()
