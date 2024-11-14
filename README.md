@@ -33,3 +33,6 @@ A basic Suika game clone made using Python, Pygame, and Pymunk.
      b. Show the user their score when they lose and a way of restarting. [DONE]
 
     7. GUI & Art
+     a. Add art for fruits.
+     b. Add art for the environment (background, boundaries, etc.).
+     c. Make proper GUI.
