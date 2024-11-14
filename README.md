@@ -29,7 +29,7 @@ A basic Suika game clone made using Python, Pygame, and Pymunk.
      b. Store the user's highscore locally.
     
     6. Game loop
-     a. When a player drops a fruit and it intersects with the maximum height of the boundary end the game.
-     b. Show the user their highscore when they lose and a way of restarting.
+     a. When a player drops a fruit and it intersects with the maximum height of the boundary end the game. [DONE]
+     b. Show the user their score when they lose and a way of restarting. [DONE]
 
     7. GUI & Art
