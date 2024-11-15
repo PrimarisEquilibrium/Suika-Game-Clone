@@ -13,6 +13,8 @@ from utils import create_text, Button, load_local_highscore, set_local_highscore
 def main() -> None:
     pygame.init()
 
+    pygame.display.set_caption("Suika Game Clone")
+
     # Pygame Config
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()

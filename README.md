@@ -2,6 +2,10 @@
 
 A basic Suika game clone made using Python, Pygame, and Pymunk.
 
+## Screenshots
+
+![Suika Game Clone Preview Image](images/suikapreview.png "Optional Title")
+
 ## Roadmap
 
     1. Allow the user to drop fruits [DONE]
