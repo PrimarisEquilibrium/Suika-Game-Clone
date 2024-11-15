@@ -3,6 +3,8 @@ import pygame
 import pickle
 from typing import Any, Union
 
+from config import ENDGAME_BOUNDARY_Y
+
 
 class Button:
     def __init__(self, position: tuple[int, int], width: int, height: int, text: str) -> None:
@@ -83,6 +85,19 @@ def load_local_highscore() -> None:
         score = 0
         set_local_highscore(score)
     return score
+
+
+def is_shape_over_end_boundary(shape: pymunk.Shape) -> bool:
+    """Determines if a shape passed the end boundary y-position.
+    
+    Args:
+        shape: A pymunk shape.
+    
+    Returns:
+        True, if the shape collides with the end boundary; otherwise false.
+    """
+
+    return shape.point_query((shape.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
 
 
 def draw_circle_image(screen: pygame.Surface, image_path: str, position: tuple[int, int], radius: int):

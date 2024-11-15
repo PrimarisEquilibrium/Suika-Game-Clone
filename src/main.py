@@ -4,10 +4,10 @@ import pymunk
 import pymunk.pygame_util
 from typing import Any
 
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, MAX_FRUIT_TO_SPAWN, ENDGAME_BOUNDARY_Y
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, LEFT, RIGHT, ENDGAME_BOUNDARY_Y
 from fruits import Fruit, draw_fruit, create_fruit, create_random_fruit
 from physics import create_static_boundaries
-from utils import create_text, Button, load_local_highscore, set_local_highscore
+from utils import create_text, Button, load_local_highscore, set_local_highscore, is_shape_over_end_boundary
 
 
 def main() -> None:
@@ -54,19 +54,6 @@ def main() -> None:
                 pygame.draw.line(screen, "white", shape.a, shape.b, 5)
 
 
-    def is_shape_over_end_boundary(shape: pymunk.Shape) -> bool:
-        """Determines if a shape passed the end boundary y-position.
-        
-        Args:
-            shape: A pymunk shape.
-        
-        Returns:
-            True, if the shape collides with the end boundary; otherwise false.
-        """
-
-        return shape.point_query((shape.body.position.x, ENDGAME_BOUNDARY_Y)).distance < 0
-
-
     def handle_fruit_collision(arbiter: pymunk.Arbiter, space: pymunk.Space, data: dict[Any, Any]) -> bool:
         """Handles fruit collisions
         
@@ -111,8 +98,15 @@ def main() -> None:
     handler = space.add_collision_handler(1, 1)
     handler.pre_solve = handle_fruit_collision
 
+    # Initialize Suika game boundaries
     create_static_boundaries(space)
+
+    # Largest size fruit that can be spawned initially
+    MAX_FRUIT_TO_SPAWN = Fruit.APPLE
+
     current_fruit = create_random_fruit(MAX_FRUIT_TO_SPAWN)
+
+    # Cooldown state/configuration
     on_cooldown = False
     cooldown_timer = 0
     cooldown_duration = 1000 # In ms
@@ -155,6 +149,7 @@ def main() -> None:
         
         render_pymunk_space(space)
 
+        # Display game over overlay and statistics
         if is_game_over:
             s = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
             s.fill((0, 0, 0, 200))
